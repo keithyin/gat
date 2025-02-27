@@ -1,9 +1,14 @@
 use axum::{
-    http::{Method, StatusCode}, routing::{get, post}, Router, ServiceExt
+    Router, ServiceExt,
+    http::{Method, StatusCode},
+    routing::{get, post},
 };
 use tokio;
 use toolkits::pair_alignment;
-use tower_http::{cors::{Any, CorsLayer}, services::{self, ServeDir}};
+use tower_http::{
+    cors::{Any, CorsLayer},
+    services::{self, ServeDir},
+};
 
 pub mod toolkits;
 pub mod utils;
@@ -17,12 +22,16 @@ async fn main() {
 
     // build our application with a single route
 
-    let static_files = ServeDir::new("/data/web-server/toolkits-of-rocyin").append_index_html_on_directories(true);
+    let static_files =
+        ServeDir::new("/data/web-server/toolkits-of-rocyin").append_index_html_on_directories(true);
 
     let app = Router::new()
         .fallback_service(static_files)
         .route("/pair_align", post(pair_alignment::pair_alignment))
-        .route("/align_to_ref_genome", post(pair_alignment::pair_alignment_with_ref_genome))
+        .route(
+            "/align_to_ref_genome",
+            post(pair_alignment::pair_alignment_with_ref_genome),
+        )
         .layer(cors);
 
     // run our app with hyper, listening globally on port 3000

@@ -39,7 +39,7 @@ class _PairAlignmentState extends State<PairAlignment> {
     final target = _targetController.text;
     Map<String, String> params = {'query': query, 'target': target};
 
-    final url = Uri.http('192.168.3.55:40724', 'pair_align');
+    final url = Uri.http('127.0.0.1:40724', 'pair_align');
 
     final response = await http.post(
       url,

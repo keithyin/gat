@@ -43,7 +43,7 @@ class _PairAlignmentWithRefGenomeState
 
     Map<String, String> params = {'query': query, 'target': _selecedRefGenome};
 
-    final url = Uri.http('192.168.3.55:40724', 'align_to_ref_genome');
+    final url = Uri.http('127.0.0.1:40724', 'align_to_ref_genome');
 
     final response = await http.post(
       url,
