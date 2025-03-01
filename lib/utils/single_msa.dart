@@ -88,7 +88,7 @@ const colorMap = {
   'G': Color(0xFFFFA500), // 橙色
   'T': Color(0xFFFF6347), // 红色
   '-': Colors.grey,
-  'v': Colors.grey,
+  '·': Colors.black,
   '#': Colors.black,
   " ": Colors.black,
   "×": Colors.black,
@@ -100,7 +100,7 @@ class SingleMsaColumn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    columnsChars.insert(2, 'v');
+    columnsChars.insert(2, '·');
     final indicator = columnsChars[0] != columnsChars[1]? "×": " ";
     columnsChars.insert(0, indicator);
     return Column(
@@ -110,8 +110,9 @@ class SingleMsaColumn extends StatelessWidget {
                 (char) => Text(
                   char,
                   style: GoogleFonts.sourceCodePro(
-                    fontSize: 18,
+                    fontSize: char == '·' ? 12: 18,
                     color: colorMap[char],
+                    fontWeight: char == '·' ? FontWeight.bold: FontWeight.normal
                   ),
                 ),
               )
