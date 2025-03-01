@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:toolkits_of_roc_yin/utils/single_alignment.dart';
+import 'package:gat/utils/single_alignment.dart';
 
 List<List<String>> convertDynamicToList(dynamic input) {
   if (input is! List) throw Exception("非列表类型");
@@ -14,6 +14,18 @@ List<List<String>> convertDynamicToList(dynamic input) {
       if (innerItem is String) return innerItem;
       throw Exception("内部元素非字符串");
     }).toList();
+  }).toList();
+}
+
+List<String> convertDynamicToListString(dynamic input) {
+  if (input is! List) throw Exception("非列表类型");
+
+  return input.map((item) {
+    if (item is String) {
+      return item;
+    } else {
+      throw Exception("外层元素非列表");
+    }
   }).toList();
 }
 
@@ -29,9 +41,9 @@ class _PairAlignmentWithRefGenomeState
     extends State<PairAlignmentWithRefGenome> {
   final _queryController = TextEditingController();
 
-  final _options = ["ecoli", "sa"];
+  List<String> _options = [];
 
-  late String _selecedRefGenome = _options[0];
+  String _selecedRefGenome = "";
 
   List<List<String>> _alignRes = [];
 
@@ -56,6 +68,27 @@ class _PairAlignmentWithRefGenomeState
     setState(() {
       _alignRes = align_res;
     });
+  }
+
+  void getRefGemoes() async {
+    final url = Uri.http('127.0.0.1:40724', 'ref_genomes');
+    final response = await http.get(url);
+    Map<String, dynamic> res = jsonDecode(response.body);
+    setState(() {
+      _options = convertDynamicToListString(res['result']);
+      if (_options.length > 0) {
+        _selecedRefGenome = _options[0];
+      } else {
+        _selecedRefGenome = "no ref gemomes found!!!";
+      }
+    });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getRefGemoes();
   }
 
   @override

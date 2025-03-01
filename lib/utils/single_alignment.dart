@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:toolkits_of_roc_yin/utils/align_tile.dart';
+import 'package:gat/utils/align_tile.dart';
 
 // class SingleAlignment extends StatelessWidget {
 //   String alignedQuery;
@@ -39,7 +39,7 @@ class SingleAlignment extends StatelessWidget {
     required this.alignedTarget,
     required this.alignedQuery,
     required this.targetTag,
-    required this.queryTag
+    required this.queryTag,
   });
 
   @override
@@ -62,12 +62,25 @@ class SingleAlignment extends StatelessWidget {
       padding: const EdgeInsets.only(top: 20.0),
       child: Column(
         children: [
-          Text(targetTag, style: GoogleFonts.sourceCodePro(fontSize: 15, fontWeight: FontWeight.bold)),
-          Text(queryTag, style: GoogleFonts.sourceCodePro(fontSize: 15, fontWeight: FontWeight.bold)),
-      
+          Text(
+            targetTag,
+            style: GoogleFonts.sourceCodePro(
+              fontSize: 15,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          Text(
+            queryTag,
+            style: GoogleFonts.sourceCodePro(
+              fontSize: 15,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+
           Column(
             children: List.generate(
-              ((alignedQuery.length + numRowElements - 1) / numRowElements).toInt(),
+              ((alignedQuery.length + numRowElements - 1) / numRowElements)
+                  .toInt(),
               (index) {
                 int start = index * numRowElements;
                 int end = start + numRowElements;
@@ -75,15 +88,14 @@ class SingleAlignment extends StatelessWidget {
                 final sbrQuery = alignedQuery.substring(start, end);
                 final sbrIndicator = indicatorStr.substring(start, end);
                 final sbrTarget = alignedTarget.substring(start, end);
-          
+
                 return Padding(
                   padding: const EdgeInsets.only(top: 8.0),
                   child: Column(
                     children: [
                       buildAlignedText2(sbrQuery),
                       buildAlignedText2(sbrIndicator),
-                      buildAlignedText2(sbrTarget)
-                      
+                      buildAlignedText2(sbrTarget),
                     ],
                   ),
                 );
@@ -96,20 +108,23 @@ class SingleAlignment extends StatelessWidget {
   }
 }
 
- Widget buildAlignedText(String text) {
-    return RichText(
-      text: TextSpan(
-        children: text
-            .split('')
-            .map((char) => TextSpan(
+Widget buildAlignedText(String text) {
+  return RichText(
+    text: TextSpan(
+      children:
+          text
+              .split('')
+              .map(
+                (char) => TextSpan(
                   text: char,
-                  style: GoogleFonts.sourceCodePro(fontSize: 14)
-                ))
-            .toList(),
-      ),
-    );
- }
+                  style: GoogleFonts.sourceCodePro(fontSize: 14),
+                ),
+              )
+              .toList(),
+    ),
+  );
+}
 
- Widget buildAlignedText2(String text) {
-    return Text(text, style: GoogleFonts.sourceCodePro(fontSize: 12),);
- }
+Widget buildAlignedText2(String text) {
+  return Text(text, style: GoogleFonts.sourceCodePro(fontSize: 12));
+}

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:toolkits_of_roc_yin/pages/msa.dart';
-import 'package:toolkits_of_roc_yin/pages/pair_alignment.dart';
-import 'package:toolkits_of_roc_yin/pages/pair_alignment_with_ref_genome.dart';
+import 'package:gat/pages/msa.dart';
+import 'package:gat/pages/pair_alignment.dart';
+import 'package:gat/pages/pair_alignment_with_ref_genome.dart';
 
 class MainPage extends StatefulWidget {
   MainPage({super.key});

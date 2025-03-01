@@ -43,10 +43,13 @@ class _FSWidegetState extends State<FSWideget> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(widget.tag, style: GoogleFonts.sourceCodePro(fontSize: 18)),
-          Text(fname),
           ElevatedButton(
             onPressed: () => _pickFile("ref"),
             child: Text("Select a File"),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 4.0),
+            child: Text(fname),
           ),
         ],
       ),

@@ -786,6 +786,7 @@ name = "gat"
 version = "0.1.0"
 dependencies = [
  "axum",
+ "clap",
  "lazy_static",
  "mm2",
  "serde",

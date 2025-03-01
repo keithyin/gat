@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:toolkits_of_roc_yin/pages/main_page.dart';
+import 'package:gat/pages/main_page.dart';
 
 void main() {
   runApp(const MyApp());

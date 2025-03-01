@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:toolkits_of_roc_yin/utils/single_alignment.dart';
+import 'package:gat/utils/single_alignment.dart';
 
 List<List<String>> convertDynamicToList(dynamic input) {
   if (input is! List) throw Exception("非列表类型");

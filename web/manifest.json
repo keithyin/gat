@@ -1,6 +1,6 @@
 {
-    "name": "toolkits_of_roc_yin",
-    "short_name": "toolkits_of_roc_yin",
+    "name": "gat",
+    "short_name": "gat",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

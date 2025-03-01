@@ -1,6 +1,6 @@
-use std::collections::HashMap;
+use std::{collections::HashMap, ops::Deref, sync::Arc};
 
-use axum::Json;
+use axum::{extract::State, Json};
 
 use crate::utils::dna::reverse_complement;
 use lazy_static::lazy_static;
@@ -51,10 +51,12 @@ pub async fn pair_alignment(Json(payload): Json<PairAlignParam>) -> Json<PairAli
 }
 
 pub async fn pair_alignment_with_ref_genome(
+    State(ref_genomes): State<Arc<Option<HashMap<String, String>>>>,
     Json(mut payload): Json<PairAlignParam>,
 ) -> Json<PairAlignResp> {
+    let ref_genomes = ref_genomes.deref().as_ref().unwrap();
     let target_name = payload.target.clone();
-    let target_seq = REF_GENOME.get(&payload.target).unwrap().clone();
+    let target_seq = ref_genomes.get(&payload.target).unwrap().clone();
     payload.target = target_seq;
     pair_align_core(payload, Some(target_name))
 }
