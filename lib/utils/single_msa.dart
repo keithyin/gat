@@ -15,7 +15,7 @@ class SingleMsa extends StatelessWidget {
       padding: const EdgeInsets.only(top: 20.0),
       child: Column(
         children: [
-          Text("Channel:${msaResult.names[0]}", style: TextStyle(fontSize: 14)),
+          Text("Channel:${msaResult.names[1]}", style: TextStyle(fontSize: 14)),
           Text(
             "Identity:${msaResult.identity}",
             style: TextStyle(fontSize: 14),
@@ -92,6 +92,17 @@ const colorMap = {
   '#': Colors.black,
   " ": Colors.black,
   "×": Colors.black,
+  "0": Colors.red,
+  "1": Colors.red,
+  "2": Colors.red,
+  "3": Colors.red,
+  "4": Colors.black,
+  "5": Colors.black,
+  "6": Colors.black,
+  "7": Colors.black,
+  "8": Colors.black,
+  "9": Colors.black,
+
 };
 
 class SingleMsaColumn extends StatelessWidget {
@@ -100,8 +111,8 @@ class SingleMsaColumn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    columnsChars.insert(2, '·');
-    final indicator = columnsChars[0] != columnsChars[1]? "×": " ";
+    columnsChars.insert(3, '·');
+    final indicator = columnsChars[1] != columnsChars[2]? "×": " ";
     columnsChars.insert(0, indicator);
     return Column(
       children:
