@@ -4,6 +4,7 @@ import 'package:gat/utils/np.dart';
 import 'package:gat/utils/single_msa.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
+import 'dart:collection';
 
 import 'package:flutter/material.dart';
 import 'package:gat/utils/file_selector.dart';
@@ -19,6 +20,7 @@ class _MSAState extends State<MSA> {
   final SelectedFilename _asrtcFile = SelectedFilename(filename: "");
 
   List<MsaResult> _msaResults = [];
+  final HashMap<String, int> _name2idx = HashMap();
 
   void _doAnalysis() async {
     final asrtcFile = _asrtcFile.filename;
@@ -32,6 +34,9 @@ class _MSAState extends State<MSA> {
 
     setState(() {
       _msaResults = msaResults;
+      for (int i = 0; i < msaResults.length; i++) {
+        _name2idx[msaResults[i].names[1]] = i;
+      }
     });
   }
 
@@ -39,7 +44,10 @@ class _MSAState extends State<MSA> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        SelectableText("cargo install asts", style: GoogleFonts.sourceCodePro()),
+        SelectableText(
+          "cargo install asts",
+          style: GoogleFonts.sourceCodePro(),
+        ),
         SelectableText(
           "asrtc --ref-fa reffa_file -q sbr.bam -t smc.bam -p oup_prefix --np-range 7:7",
           style: GoogleFonts.sourceCodePro(),
@@ -55,7 +63,9 @@ class _MSAState extends State<MSA> {
           ),
         ),
 
-        Expanded(child: MsaResultsWidget(msaResults: _msaResults)),
+        Expanded(
+          child: MsaResultsWidget(msaResults: _msaResults, name2idx: _name2idx),
+        ),
       ],
     );
   }
@@ -68,6 +78,7 @@ class MsaResult {
   final int del;
   final List<String> msaSeqs;
   final List<String> names;
+  final List<int> positions;
 
   MsaResult({
     required this.identity,
@@ -76,6 +87,7 @@ class MsaResult {
     required this.del,
     required this.msaSeqs,
     required this.names,
+    required this.positions,
   });
 
   // JSON 解析
@@ -87,6 +99,7 @@ class MsaResult {
       del: json['del'] as int,
       msaSeqs: List<String>.from(json['msa_seqs']),
       names: List<String>.from(json['names']),
+      positions: List<int>.from(json['positions']),
     );
   }
 
@@ -99,13 +112,67 @@ class MsaResult {
       'del': del,
       'msa_seqs': msaSeqs,
       'names': names,
+      'positions': positions,
     };
+  }
+
+  List<MsaResult> partition() {
+    if (positions.isEmpty) {
+      return [];
+    }
+    List<MsaResult> results = [];
+    MsaResult msaResult = MsaResult(
+      identity: identity,
+      mm: mm,
+      ins: ins,
+      del: del,
+      msaSeqs: List.empty(growable: true),
+      names: names,
+      positions: List.empty(growable: true),
+    );
+    String firstSeq = msaSeqs[0];
+    int start = 0;
+    int i = 0;
+    for (i = 0; i < positions.length; i++) {
+      if (firstSeq[i] == "#") {
+        for (final seq in msaSeqs) {
+          msaResult.msaSeqs.add(seq.substring(start, i));
+        }
+        msaResult.positions.addAll(positions.sublist(start, i));
+
+        results.add(msaResult);
+        msaResult = MsaResult(
+          identity: identity,
+          mm: mm,
+          ins: ins,
+          del: del,
+          msaSeqs: List.empty(growable: true),
+          names: names,
+          positions: List.empty(growable: true),
+        );
+
+        start = i + 1;
+      }
+    }
+    for (final seq in msaSeqs) {
+      msaResult.msaSeqs.add(seq.substring(start, i));
+    }
+    msaResult.positions.addAll(positions.sublist(start, i));
+
+    results.add(msaResult);
+
+    return results;
   }
 }
 
 class MsaResultsWidget extends StatefulWidget {
   List<MsaResult> msaResults = [];
-  MsaResultsWidget({super.key, required this.msaResults});
+  HashMap<String, int> name2idx;
+  MsaResultsWidget({
+    super.key,
+    required this.msaResults,
+    required this.name2idx,
+  });
 
   @override
   State<MsaResultsWidget> createState() => _MsaResultsWidgetState();
@@ -113,6 +180,7 @@ class MsaResultsWidget extends StatefulWidget {
 
 class _MsaResultsWidgetState extends State<MsaResultsWidget> {
   int _current = 0;
+
   void previousCallback() {
     if (_current > 0) {
       setState(() {
@@ -129,6 +197,12 @@ class _MsaResultsWidgetState extends State<MsaResultsWidget> {
     }
   }
 
+  void setIdxCallback(int idx) {
+    setState(() {
+      _current = idx;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -137,8 +211,10 @@ class _MsaResultsWidgetState extends State<MsaResultsWidget> {
           current: _current,
           total: widget.msaResults.length,
           visable: widget.msaResults.isNotEmpty,
+          name2idx: widget.name2idx,
           previousCallback: previousCallback,
           nextCallback: nextCallback,
+          setIdxCallback: setIdxCallback,
         ),
         Expanded(
           child:
